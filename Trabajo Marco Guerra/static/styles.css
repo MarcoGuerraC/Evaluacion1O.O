@@ -1,0 +1,20 @@
+.tabla-superpuesta {
+    position: fixed;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 500px; /* Tamaño máximo de la tarjeta */
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 9999; /* Asegura que esté por encima de otros elementos */
+    overflow-y: auto; /* Si el contenido es muy largo, permite hacer scroll */
+    max-height: 90vh
+    
+}
+body{
+    padding-top: 70px;
+}

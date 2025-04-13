@@ -1,0 +1,108 @@
+{% block contenido %}
+<link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.min.js" integrity="sha384-VQqxDN0EQCkWoxt/0vsQvZswzTHUVOImccYmSyhJTp7kGtPed0Qcx8rK9h9YEgx+" crossorigin="anonymous"></script>
+
+<h1> Recordatorio </h1>
+
+{% if recordatorio %}
+
+<div class="card mx-auto mt-5" style="width: 30rem;" tarjeta-personalizada>
+    <div class="card-header bg-primary text-white">
+      Editar recordatorio
+    </div>
+    <form action="/api/editar-recordatorio/{{ recordatorio.id }}" method="POST">
+        <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            {% if mensajes %}
+                {% for categoria, mensaje in mensajes %}
+                    <div class="alert alert-{{ categoria }} mb-3" role="alert">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="bi flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Error:">
+                            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                        </svg>
+
+                    </div>
+                {% endfor%}
+            {% endif %}
+        <label for="texto"> se cambiara la recordatorio : </label>
+        <input type="text" id="texto" name="texto" class="form-control" value="{{recordatorio.texto}}">
+        </li>
+        <li class="list-group-item">
+            <label for="importante">¿es importante?</label>
+            <select name="importante" id="importante" class="form-control">
+                <option value="True" {% if recordatorio.importante%} selected {% endif %}>Sí</option>
+                <option value="False" {% if recordatorio.importante%} selected {% endif %}>No</option>
+            </select>
+        </li>
+        
+        </ul>
+        <div class="card-footer text-end">
+            <button type="submit" class="btn btn-success">Guardar Cambios</button>
+            <a href="/" class="btn btn-secundary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+{% endif %}
+
+
+{% with mensajes = get_flashed_messages(with_categories = true) %}
+    {% if mensajes %}
+        {% for categoria, mensaje in mensajes %}
+            <div class="alert alert-{{ categoria }} mb-3" role="alert">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="bi flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Error:">
+                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                </svg>
+                {{ mensaje }}
+            </div>
+        {% endfor%}
+    {% endif %}
+{% endwith %}
+<div class="container mt-4">
+    <div class="mx-auto" style="max-width: 1000px;">
+        <form action="/crear-recordatorio" method="POST">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Escriba la recordatorio" aria-label="Escriba la recordatorio" aria-describedby="boton-recordatorio" name="texto">
+                <button class="btn btn-primary" type="submit" id="boton-recordatorio">Agregar</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="container mt-4">
+    <div class="mx-auto" style="max-width: 1000px;">
+        <table class="table table-hover">
+            <thead class="bg-secondary text-white">
+                <tr>
+                    <th class="bg-secondary text-black">ID</th>
+                    <th class="bg-secondary text-black">recordatorio</th>
+                    <th class="bg-secondary text-black">Importancia</th>
+                    <th class="bg-secondary text-black">Fecha</th>
+                    <th class="bg-secondary text-black"></th>
+                    <th class="bg-secondary text-black"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for recordatorio in recordatorios %}
+
+                <tr class="{{ 'table-success' if recordatorio.importante else 'table-danger' }}">
+                    <td>{{ recordatorio.id }}</td>
+                    <td>{{ recordatorio.texto }}</td>
+                    <td>{{ "Sí" if recordatorio.importante else "No" }}</td>
+                    <td>{{ recordatorio.Fecha.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>
+                        <form action="/api/eliminar-recordatorio/{{ recordatorio.id }}" method="POST">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </td>
+                    <td><a href="/api/editar-recordatorio/{{ recordatorio.id }}" class="btn btn-warning">Editar</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
