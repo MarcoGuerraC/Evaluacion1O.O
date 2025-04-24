@@ -23,7 +23,7 @@ def crear_recordatorio():
     texto = datos.get("texto")
     
 
-    if not texto.strip() or len(texto.strip() > 120): #strip devuelve los caracteres "  " y los convierte "" por lo que eso ya hace que entre el if
+    if not texto.strip() or len(texto.strip()) > 120: #strip devuelve los caracteres "  " y los convierte "" por lo que eso ya hace que entre el if
         flash("Ingrese algun recordatorio (la cantidad de letras maxima es de 120)","danger")
         return redirect("/")
 
